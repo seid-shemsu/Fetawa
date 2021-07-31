@@ -59,15 +59,20 @@ public class MyQuestion extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 answerList.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    Answer request = snapshot.getValue(Answer.class);
-                    answerList.add(0,request);
+                    //Answer ans = snapshot.getValue(Answer.class);
+                    String question, answer, id;
+                    id = snapshot.getKey();
+                    question = snapshot.child("question").getValue().toString();
+                    answer = snapshot.child("answer").getValue().toString();
+                    //answerList.add(0, ans);
+                    answerList.add(0, new Answer(id, question, answer));
                     ids.add(snapshot.getKey());
                 }
                 if (answerList.size() == 0 )
                     empty.setVisibility(View.VISIBLE);
                 else
                     empty.setVisibility(View.GONE);
-                answerAdapter = new MineAdapter(answerList, root.getContext(), ids);
+                answerAdapter = new MineAdapter(answerList, root.getContext());
                 recyclerView.setAdapter(answerAdapter);
                 progressBar.setVisibility(View.GONE);
             }

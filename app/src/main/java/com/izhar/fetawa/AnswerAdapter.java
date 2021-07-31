@@ -80,6 +80,7 @@ public class AnswerAdapter extends RecyclerView.Adapter<AnswerAdapter.AnswerView
                 public void onClick(View v) {
 
                     context.startActivity(new Intent(context, Detail.class)
+                            .putExtra("id", answerList.get(getAdapterPosition()).getId())
                             .putExtra("question",answerList.get(getAdapterPosition()).getQuestion())
                             .putExtra("answer",answerList.get(getAdapterPosition()).getAnswer()));
                 }

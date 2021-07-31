@@ -19,8 +19,6 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -109,6 +107,7 @@ public class HomeFragment extends Fragment {
         }
         return true;
     }
+
     void setData(String date){
         progressBar.setVisibility(View.VISIBLE);
         empty.setVisibility(View.GONE);
@@ -118,8 +117,13 @@ public class HomeFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 answerList.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    Answer request = snapshot.getValue(Answer.class);
-                    answerList.add(0,request);
+                    //Answer request = snapshot.getValue(Answer.class);
+                    String question, answer, id;
+                    id = snapshot.getKey();
+                    question = snapshot.child("question").getValue().toString();
+                    answer = snapshot.child("answer").getValue().toString();
+                    //answerList.add(0,request);
+                    answerList.add(0, new Answer(id, question, answer));
                     ids.add(snapshot.getKey());
                 }
                 if (answerList.size() == 0 )

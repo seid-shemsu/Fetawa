@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,11 +18,9 @@ import java.util.List;
 public class MineAdapter extends RecyclerView.Adapter<MineAdapter.MineViewHolder> {
     List<Answer> answerList;
     Context context;
-    List<String> ids;
-    public MineAdapter(List<Answer> answerList, Context context, List<String> ids) {
+    public MineAdapter(List<Answer> answerList, Context context) {
         this.answerList = answerList;
         this.context = context;
-        this.ids = ids;
     }
 
     @NonNull
@@ -58,6 +55,7 @@ public class MineAdapter extends RecyclerView.Adapter<MineAdapter.MineViewHolder
                 @Override
                 public void onClick(View v) {
                     context.startActivity(new Intent(context, Detail.class)
+                            .putExtra("id", answerList.get(getAdapterPosition()).getId())
                             .putExtra("question",answerList.get(getAdapterPosition()).getQuestion())
                             .putExtra("answer",answerList.get(getAdapterPosition()).getAnswer()));
                 }
