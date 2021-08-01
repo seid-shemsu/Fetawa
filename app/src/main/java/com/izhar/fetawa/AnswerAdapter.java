@@ -21,6 +21,7 @@ public class AnswerAdapter extends RecyclerView.Adapter<AnswerAdapter.AnswerView
     Context context;
     List<String> ids;
     Fav myFav;
+
     public AnswerAdapter(List<Answer> answerList, Context context, List<String> ids) {
         this.answerList = answerList;
         this.context = context;

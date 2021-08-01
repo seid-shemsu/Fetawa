@@ -1,9 +1,7 @@
 package com.izhar.fetawa;
 
-import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
@@ -21,14 +19,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
@@ -39,10 +34,15 @@ public class Detail extends AppCompatActivity {
     SeekBar seekBar;
     CardView text_card, voice_card;
     String question, answer, id;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setTitle("Answer");
         setContentView(R.layout.activity_detail);
+
         question = getIntent().getExtras().getString("question");
         answer = getIntent().getExtras().getString("answer");
         id = getIntent().getExtras().getString("id");
@@ -52,7 +52,7 @@ public class Detail extends AppCompatActivity {
         voice_card = findViewById(R.id.voice_card);
         question_textview = findViewById(R.id.question);
         question_textview.setText(question);
-        if (answer.startsWith("https://")){
+        if (answer.startsWith("https://")) {
             text_card.setVisibility(View.GONE);
             String root = Environment.getExternalStorageDirectory().toString();
             File dir = new File(root + "/fetawa/audios");
@@ -61,7 +61,20 @@ public class Detail extends AppCompatActivity {
                 icon.setImageDrawable(getResources().getDrawable(R.drawable.play));
             }
             icon.setOnClickListener(v -> {
-                download();
+                if (mediaPlayer != null) {
+                    if (mediaPlayer.isPlaying()) {
+                        mediaPlayer.pause();
+                        icon.setImageDrawable(getResources().getDrawable(R.drawable.play));
+                    } else {
+                        mediaPlayer.start();
+                        icon.setImageDrawable(getResources().getDrawable(R.drawable.pause));
+                    }
+                } else {
+                    if (file.isFile() && file.length() > 0) {
+                        play();
+                    } else
+                        download();
+                }
             });
             seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
@@ -82,6 +95,7 @@ public class Detail extends AppCompatActivity {
             });
 
         }
+
         else {
             voice_card.setVisibility(View.GONE);
             answer_textview = findViewById(R.id.answer);
@@ -99,8 +113,7 @@ public class Detail extends AppCompatActivity {
 
             if (file.isFile() && file.length() > 0) {
                 play();
-            }
-            else {
+            } else {
                 final Dialog dialog = new Dialog((this));
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.setContentView(R.layout.downloading);
@@ -128,18 +141,13 @@ public class Detail extends AppCompatActivity {
                     Toast.makeText(Detail.this, "ERROR 100\n" + e.toString(), Toast.LENGTH_SHORT).show();
                 }
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             Toast.makeText(Detail.this, "ERROR 101\n" + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
+
     MediaPlayer mediaPlayer;
     private void play() {
-        if (mediaPlayer != null){
-            if (mediaPlayer.isPlaying())
-                mediaPlayer.pause();
-        }
-        mediaPlayer = null;
         mediaPlayer = new MediaPlayer();
         try {
             String root = Environment.getExternalStorageDirectory().toString();
@@ -148,13 +156,14 @@ public class Detail extends AppCompatActivity {
             mediaPlayer.setDataSource(file.toString());
             mediaPlayer.prepare();
             mediaPlayer.start();
+            icon.setImageDrawable(getResources().getDrawable(R.drawable.pause));
+            seekBar.setMax(mediaPlayer.getDuration());
+            int startTime = mediaPlayer.getCurrentPosition();
+            handler.postDelayed(updateSeekbar, 100);
+            seekBar.setProgress(startTime);
         } catch (final Exception e) {
             Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
         }
-        seekBar.setMax(mediaPlayer.getDuration());
-        int startTime = mediaPlayer.getCurrentPosition();
-        handler.postDelayed(updateSeekbar, 100);
-        seekBar.setProgress(startTime);
     }
 
     Handler handler = new Handler();
@@ -165,10 +174,12 @@ public class Detail extends AppCompatActivity {
             handler.postDelayed(this, 1000);
         }
     };
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 100){
+        if (requestCode == 100) {
 
         }
     }
@@ -176,8 +187,14 @@ public class Detail extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if(mediaPlayer != null)
+        if (mediaPlayer != null)
             if (mediaPlayer.isPlaying())
                 mediaPlayer.pause();
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }

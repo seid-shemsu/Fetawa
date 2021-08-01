@@ -123,7 +123,7 @@ public class HomeFragment extends Fragment {
                     question = snapshot.child("question").getValue().toString();
                     answer = snapshot.child("answer").getValue().toString();
                     //answerList.add(0,request);
-                    answerList.add(0, new Answer(id, question, answer));
+                    answerList.add(new Answer(id, question, answer));
                     ids.add(snapshot.getKey());
                 }
                 if (answerList.size() == 0 )

@@ -8,6 +8,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        app:backgroundTint="@color/blue"
+        app:tint="@color/black"
         android:id="@+id/pbar"/>
     <TextView
         android:layout_width="wrap_content"
@@ -15,6 +17,8 @@
         android:layout_centerInParent="true"
         android:gravity="center"
         android:text="No question asked today."
+        android:textSize="18sp"
+        android:textColor="@color/blue"
         android:id="@+id/empty"
         android:visibility="gone"/>
     <androidx.recyclerview.widget.RecyclerView

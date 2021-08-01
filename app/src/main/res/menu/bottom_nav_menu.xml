@@ -17,11 +17,6 @@
         android:title="@string/title_my_question"/>
 
     <item
-        android:id="@+id/navigation_notifications"
-        android:icon="@drawable/question"
-        android:title="@string/title_notifications" />
-
-    <item
         android:id="@+id/navigation_about"
         android:icon="@drawable/about"
         android:title="@string/title_about"/>
