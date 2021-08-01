@@ -34,12 +34,12 @@ public class Fav extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public long insert_new_fav(String id, String question, String answer) {
+    public long insert_new_fav(Answer answer) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put("id", id);
-        contentValues.put("question", question);
-        contentValues.put("answer", answer);
+        contentValues.put("id", answer.getId());
+        contentValues.put("question", answer.getQuestion());
+        contentValues.put("answer", answer.getAnswer());
         long l = db.insert("favorite", null, contentValues);
         return l;
     }
@@ -62,7 +62,7 @@ public class Fav extends SQLiteOpenHelper {
         Cursor res =  db.rawQuery( "select * from favorite", null );
         res.moveToFirst();
         while(!res.isAfterLast()){
-            Answer answer = new Answer(res.getString(res.getColumnIndex(COLUMN_QUESTION)),res.getString(res.getColumnIndex(COLUMN_ANSWER)));
+            Answer answer = new Answer(res.getString(res.getColumnIndex(COLUMN_ID)), res.getString(res.getColumnIndex(COLUMN_QUESTION)),res.getString(res.getColumnIndex(COLUMN_ANSWER)));
             array_list.add(answer);
             res.moveToNext();
         }

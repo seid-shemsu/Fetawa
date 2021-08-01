@@ -46,6 +46,7 @@ public class Detail extends AppCompatActivity {
         question = getIntent().getExtras().getString("question");
         answer = getIntent().getExtras().getString("answer");
         id = getIntent().getExtras().getString("id");
+        Toast.makeText(this, id, Toast.LENGTH_SHORT).show();
         icon = findViewById(R.id.file_icon);
         seekBar = findViewById(R.id.seekbar);
         text_card = findViewById(R.id.text_card);
@@ -139,9 +140,11 @@ public class Detail extends AppCompatActivity {
                             });
                 } catch (Exception e) {
                     Toast.makeText(Detail.this, "ERROR 100\n" + e.toString(), Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
                 }
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             Toast.makeText(Detail.this, "ERROR 101\n" + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }

@@ -37,7 +37,7 @@ public class DashboardFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         answerList = myFav.getAllFav();
         ids = myFav.getIds();
-        FavAdapter adapter = new FavAdapter(answerList, getContext(), ids);
+        FavAdapter adapter = new FavAdapter(answerList, getContext());
         recyclerView.setAdapter(adapter);
         return root;
     }

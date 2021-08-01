@@ -1,15 +1,12 @@
 package com.izhar.fetawa;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,12 +16,11 @@ import java.util.List;
 public class FavAdapter extends RecyclerView.Adapter<FavAdapter.FavViewHolder> {
     List<Answer> answerList;
     Context context;
-    List<String> ids;
     Fav myFav;
-    public FavAdapter(List<Answer> answerList, Context context, List<String> ids) {
+
+    public FavAdapter(List<Answer> answerList, Context context) {
         this.answerList = answerList;
         this.context = context;
-        this.ids = ids;
         myFav = new Fav(context);
     }
 
@@ -40,12 +36,8 @@ public class FavAdapter extends RecyclerView.Adapter<FavAdapter.FavViewHolder> {
         Answer current = answerList.get(position);
         holder.question.setText(current.getQuestion());
         holder.roll.setText(Integer.toString(position + 1));
-        if (myFav.getFav(ids.get(position)).moveToFirst()){
-            holder.fav.setImageResource(R.drawable.fav);
-        }
-        else {
-            holder.fav.setImageResource(R.drawable.fav_empty);
-        }
+        holder.fav.setImageResource(R.drawable.fav);
+
     }
 
     @Override
@@ -56,6 +48,7 @@ public class FavAdapter extends RecyclerView.Adapter<FavAdapter.FavViewHolder> {
     public class FavViewHolder extends RecyclerView.ViewHolder {
         TextView question, roll;
         ImageView fav;
+
         public FavViewHolder(@NonNull View itemView) {
             super(itemView);
             question = itemView.findViewById(R.id.question);
@@ -65,15 +58,8 @@ public class FavAdapter extends RecyclerView.Adapter<FavAdapter.FavViewHolder> {
             fav.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (myFav.getFav(ids.get(getAdapterPosition())).moveToFirst()){
-                        myFav.deleteFav(ids.get(getAdapterPosition()));
-                        deleteItem(getAdapterPosition());
-                    }
-                    else {
-                        fav.setImageResource(R.drawable.fav);
-                        long b = myFav.insert_new_fav(ids.get(getAdapterPosition()), answerList.get(getAdapterPosition()).getQuestion(), answerList.get(getAdapterPosition()).getAnswer());
-                        Toast.makeText(context, b+"", Toast.LENGTH_SHORT).show();
-                    }
+                    myFav.deleteFav(answerList.get(getAdapterPosition()).getId());
+                    deleteItem(getAdapterPosition());
                 }
             });
             question.setOnClickListener(new View.OnClickListener() {
@@ -81,8 +67,9 @@ public class FavAdapter extends RecyclerView.Adapter<FavAdapter.FavViewHolder> {
                 public void onClick(View v) {
 
                     context.startActivity(new Intent(context, Detail.class)
-                            .putExtra("question",answerList.get(getAdapterPosition()).getQuestion())
-                            .putExtra("answer",answerList.get(getAdapterPosition()).getAnswer()));
+                            .putExtra("id", answerList.get(getAdapterPosition()).getId())
+                            .putExtra("question", answerList.get(getAdapterPosition()).getQuestion())
+                            .putExtra("answer", answerList.get(getAdapterPosition()).getAnswer()));
                 }
             });
         }
@@ -90,7 +77,6 @@ public class FavAdapter extends RecyclerView.Adapter<FavAdapter.FavViewHolder> {
         private void deleteItem(int adapterPosition) {
             answerList.remove(adapterPosition);
             notifyItemRemoved(adapterPosition);
-            ids.remove(adapterPosition);
             notifyItemRangeChanged(0, answerList.size());
         }
     }

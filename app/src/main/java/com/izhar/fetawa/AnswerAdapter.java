@@ -72,14 +72,15 @@ public class AnswerAdapter extends RecyclerView.Adapter<AnswerAdapter.AnswerView
                     }
                     else {
                         fav.setImageResource(R.drawable.fav);
-                        myFav.insert_new_fav(ids.get(getAdapterPosition()), answerList.get(getAdapterPosition()).getQuestion(), answerList.get(getAdapterPosition()).getAnswer());
+                        myFav.insert_new_fav(answerList.get(getAdapterPosition()));
+                        Toast.makeText(context, answerList.get(getAdapterPosition()).getId(), Toast.LENGTH_SHORT).show();
+                        //myFav.insert_new_fav(ids.get(getAdapterPosition()), answerList.get(getAdapterPosition()).getQuestion(), answerList.get(getAdapterPosition()).getAnswer());
                     }
                 }
             });
             question.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
                     context.startActivity(new Intent(context, Detail.class)
                             .putExtra("id", answerList.get(getAdapterPosition()).getId())
                             .putExtra("question",answerList.get(getAdapterPosition()).getQuestion())
