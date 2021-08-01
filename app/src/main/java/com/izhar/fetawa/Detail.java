@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,6 +32,7 @@ import java.io.File;
 public class Detail extends AppCompatActivity {
     TextView question_textview, answer_textview;
     ImageView icon;
+    ProgressBar download_progress;
     SeekBar seekBar;
     CardView text_card, voice_card;
     String question, answer, id;
@@ -46,7 +48,7 @@ public class Detail extends AppCompatActivity {
         question = getIntent().getExtras().getString("question");
         answer = getIntent().getExtras().getString("answer");
         id = getIntent().getExtras().getString("id");
-        Toast.makeText(this, id, Toast.LENGTH_SHORT).show();
+        download_progress = findViewById(R.id.download_progress);
         icon = findViewById(R.id.file_icon);
         seekBar = findViewById(R.id.seekbar);
         text_card = findViewById(R.id.text_card);
@@ -80,7 +82,7 @@ public class Detail extends AppCompatActivity {
             seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                    //mediaPlayer.seekTo(progress);
+                    mediaPlayer.seekTo(progress);
                     seekBar.setProgress(progress);
                 }
 
@@ -111,15 +113,11 @@ public class Detail extends AppCompatActivity {
             File dir = new File(root + "/fetawa/audios");
             dir.mkdirs();
             final File file = new File(dir, id + ".mp3");
-
             if (file.isFile() && file.length() > 0) {
                 play();
             } else {
-                final Dialog dialog = new Dialog((this));
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.setContentView(R.layout.downloading);
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                dialog.show();
+                download_progress.setVisibility(View.VISIBLE);
+                icon.setVisibility(View.GONE);
                 StorageReference storageReference = FirebaseStorage.getInstance().getReference("answered").child(id);
                 try {
                     file.createNewFile();
@@ -127,20 +125,21 @@ public class Detail extends AppCompatActivity {
                             .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                                 @Override
                                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                                    dialog.dismiss();
                                     play();
                                 }
                             })
                             .addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    dialog.dismiss();
+                                    download_progress.setVisibility(View.GONE);
+                                    icon.setVisibility(View.VISIBLE);
                                     Toast.makeText(Detail.this, "ERROR 99\n" + e.toString(), Toast.LENGTH_SHORT).show();
                                 }
                             });
                 } catch (Exception e) {
                     Toast.makeText(Detail.this, "ERROR 100\n" + e.toString(), Toast.LENGTH_SHORT).show();
-                    dialog.dismiss();
+                    download_progress.setVisibility(View.GONE);
+                    icon.setVisibility(View.VISIBLE);
                 }
             }
         }
@@ -151,6 +150,8 @@ public class Detail extends AppCompatActivity {
 
     MediaPlayer mediaPlayer;
     private void play() {
+        download_progress.setVisibility(View.GONE);
+        icon.setVisibility(View.VISIBLE);
         mediaPlayer = new MediaPlayer();
         try {
             String root = Environment.getExternalStorageDirectory().toString();

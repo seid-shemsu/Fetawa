@@ -25,6 +25,6 @@
     <fragment
         android:id="@+id/navigation_about"
         android:name="com.izhar.fetawa.ui.about.AboutFragment"
-        android:label="@string/title_about"
+        android:label="Settings"
         tools:layout="@layout/about_fragment"/>
 </navigation>

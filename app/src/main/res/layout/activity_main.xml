@@ -9,8 +9,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_margin="5dp"
-        app:cardCornerRadius="10dp">
+        android:layout_marginVertical="5dp"
+        android:layout_marginHorizontal="10dp"
+        app:cardCornerRadius="30dp">
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/nav_view"
@@ -19,6 +20,7 @@
             app:itemIconTint="@color/blue"
             app:itemTextColor="@color/blue"
             app:itemRippleColor="@color/blue"
+            android:pointerIcon="arrow"
             app:menu="@menu/bottom_nav_menu" />
     </androidx.cardview.widget.CardView>
 
@@ -28,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="32dp"
         android:src="@drawable/add"
         app:backgroundTint="@color/blue"
         app:tint="@color/white" />

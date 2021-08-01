@@ -9,7 +9,9 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,6 +28,7 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -43,7 +46,8 @@ public class MainActivity extends AppCompatActivity {
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(v -> {
-            ask();
+            //ask();
+            askBottom();
         });
         BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
@@ -62,6 +66,28 @@ public class MainActivity extends AppCompatActivity {
                         Manifest.permission.READ_EXTERNAL_STORAGE
                 }, 101);
             }
+    }
+    BottomSheetDialog dialog;
+    private void askBottom() {
+        dialog = new BottomSheetDialog(this);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setContentView(R.layout.fragment_notifications);
+        dialog.show();
+        final EditText editText = dialog.findViewById(R.id.question);
+        final Button button = dialog.findViewById(R.id.btn_send);
+        final ProgressBar progressBar = dialog.findViewById(R.id.pbar);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (editText.getText().toString().trim().length() > 15){
+                    button.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.VISIBLE);
+                    editText.setEnabled(false);
+                    sendQuestion(dialog, editText, button, progressBar);
+                }
+            }
+        });
     }
 
     private void ask() {
